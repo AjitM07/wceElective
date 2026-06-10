@@ -7,9 +7,7 @@ const { sendSuccess, sendError } = require('../utils/response');
 const loginValidation = [
   body('email')
     .trim()
-    .notEmpty().withMessage('Email is required.')
-    .isEmail().withMessage('Enter a valid email address.')
-    .normalizeEmail({ gmail_remove_dots: false }),
+    .notEmpty().withMessage('Email or PRN is required.'),
   body('password')
     .trim()
     .notEmpty().withMessage('Password is required.')
@@ -28,20 +26,20 @@ const studentLogin = async (req, res, next) => {
     const [rows] = await pool.execute(
       `SELECT id, name, first_name, prn, email, cgpa, password_hash, role
        FROM students
-       WHERE email = ?
+       WHERE email = ? OR prn = ?
        LIMIT 1`,
-      [email.toLowerCase()]
+      [email.toLowerCase(), email]
     );
 
     if (rows.length === 0) {
-      return sendError(res, 'Invalid email or password.', 401);
+      return sendError(res, 'Invalid email/PRN or password.', 401);
     }
 
     const student = rows[0];
     const isMatch = await bcrypt.compare(password, student.password_hash);
 
     if (!isMatch) {
-      return sendError(res, 'Invalid email or password.', 401);
+      return sendError(res, 'Invalid email/PRN or password.', 401);
     }
 
     const token = generateToken({

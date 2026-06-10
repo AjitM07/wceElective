@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import Login from "../pages/auth/Login";
+import Login from "../components/LoginPage";
 
 import Dashboard from "../pages/student/Dashboard";
 
@@ -19,7 +19,7 @@ function AppRoutes() {
       <Route
         path="/student/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRole="student">
             <Dashboard />
           </ProtectedRoute>
         }
@@ -28,7 +28,7 @@ function AppRoutes() {
       <Route
         path="/admin/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRole="coordinator">
             <AdminDashboard />
           </ProtectedRoute>
         }

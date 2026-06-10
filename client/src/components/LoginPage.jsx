@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Mail, Lock, Hash, GraduationCap, Shield, ChevronRight, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/axios';
+import useAuthStore from '../store/authStore';
 
 export default function LoginPage({ onLogin }) {
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
+
   const [activeTab, setActiveTab] = useState('student');
   const [showPassword, setShowPassword] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
@@ -14,23 +20,62 @@ export default function LoginPage({ onLogin }) {
   const [studentForm, setStudentForm] = useState({ prn: '', email: '', password: '' });
   const [adminForm, setAdminForm] = useState({ email: '', password: '' });
 
-  const handleStudentLogin = (e) => {
+  const handleStudentLogin = async (e) => {
     e.preventDefault();
-    if (!studentForm.prn && !studentForm.email) {
+    const identifier = studentForm.email || studentForm.prn;
+    if (!identifier) {
       toast.error('Please enter your PRN or email');
       return;
     }
-    toast.success('Login successful! Please complete your profile.');
-    onLogin('student');
+    if (!studentForm.password) {
+      toast.error('Please enter your password');
+      return;
+    }
+    try {
+      const res = await api.post('/auth/student/login', {
+        email: identifier,
+        password: studentForm.password
+      });
+      if (res.data.success) {
+        toast.success('Login successful!');
+        login(res.data.data.user, res.data.data.token);
+        if (onLogin) onLogin('student');
+        navigate('/student/dashboard');
+      } else {
+        toast.error(res.data.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Invalid credentials');
+    }
   };
 
-  const handleAdminLogin = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    if (adminForm.email === 'admin@wce.ac.in' && adminForm.password === 'admin123') {
-      toast.success('Welcome, Coordinator!');
-      onLogin('admin');
-    } else {
-      toast.error('Invalid credentials. Use demo credentials below.');
+    if (!adminForm.email) {
+      toast.error('Please enter your email');
+      return;
+    }
+    if (!adminForm.password) {
+      toast.error('Please enter your password');
+      return;
+    }
+    try {
+      const res = await api.post('/auth/coordinator/login', {
+        email: adminForm.email,
+        password: adminForm.password
+      });
+      if (res.data.success) {
+        toast.success('Welcome, Coordinator!');
+        login(res.data.data.user, res.data.data.token);
+        if (onLogin) onLogin('admin');
+        navigate('/admin/dashboard');
+      } else {
+        toast.error(res.data.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || 'Invalid credentials');
     }
   };
 
