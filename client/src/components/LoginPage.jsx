@@ -4,6 +4,8 @@ import { Eye, EyeOff, Mail, Lock, Hash, GraduationCap, Shield, ChevronRight, Arr
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import useAuthStore from '../store/authStore';
+import wceLogo from '../assets/WCElogo.png';
+
 
 export default function LoginPage({ onLogin }) {
   const navigate = useNavigate();
@@ -117,45 +119,33 @@ export default function LoginPage({ onLogin }) {
         {/* Logo */}
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl" style={{ background: 'rgba(255,255,255,0.2)' }}>
-              <span className="text-white text-2xl font-black">W</span>
+            <div className="w-24 h-24 flex items-center justify-center">
+              <img src={wceLogo} alt="WCE Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <div className="text-white font-bold text-xl leading-tight">Walchand College</div>
-              <div className="text-white/80 text-sm">of Engineering, Sangli</div>
+              <div className="text-white font-bold text-3xl leading-tight">Walchand College of Engineering, Sangli</div>
+              <div className="text-white/80 text-md">Department of Computer Science and Engineering</div>
             </div>
+            
           </div>
-          <div className="mt-6 w-12 h-1 rounded-full" style={{ background: '#ffe8d1' }} />
+          <div className="w-full h-0.5 rounded-full" style={{ background: '#ffe8d1' }} />
         </div>
 
         {/* Center Content */}
         <div className="relative z-10">
           <h1 className="text-white mb-4" style={{ fontSize: '2.25rem', fontWeight: 700, lineHeight: 1.2 }}>
-            Open Elective<br />Allocation System
+            Open Elective Subjects Allocation System
           </h1>
-          <p className="text-white/80 text-lg mb-10 max-w-md">
+          <p className="text-white/80 text-lg mb-10 max-w-xl">
             A smart, automated platform for managing elective subject preferences and fair allocation for CSE undergraduate students.
           </p>
 
-          <div className="grid grid-cols-2 gap-4 max-w-sm">
-            {[
-              { icon: '🎯', label: 'Smart Allocation', desc: 'Priority-based fair system' },
-              { icon: '📊', label: 'Real-time Analytics', desc: 'Live capacity tracking' },
-              { icon: '🔒', label: 'Secure & Reliable', desc: 'College-grade security' },
-              { icon: '📱', label: 'Mobile Ready', desc: 'Responsive on all devices' },
-            ].map((f) => (
-              <div key={f.label} className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-                <div className="text-2xl mb-1">{f.icon}</div>
-                <div className="text-white font-semibold text-sm">{f.label}</div>
-                <div className="text-white/70 text-xs">{f.desc}</div>
-              </div>
-            ))}
-          </div>
+          
         </div>
 
         {/* Footer */}
-        <div className="relative z-10 text-white/60 text-sm">
-          CSE Department · Academic Year 2024–25
+        <div className="relative z-10 text-white/100 text-md">
+             · Academic Year 2026 – 27 ·
         </div>
       </div>
 
@@ -165,16 +155,15 @@ export default function LoginPage({ onLogin }) {
           {/* Mobile branding */}
           <div className="lg:hidden mb-8">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #568ea3, #68c3d4)' }}>
-                <span className="text-white font-black text-lg">W</span>
+              <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
+                <img src={wceLogo} alt="WCE Logo" className="w-full h-full object-contain" />
               </div>
               <div>
-                <div className="font-bold text-gray-800">WCE Open Elective</div>
-                <div className="text-xs text-gray-500">Allocation System · CSE Department</div>
+                <div className="font-bold text-gray-800">WCE Open Elective Subject Allocation</div>
+                <div className="text-xs text-gray-500">CSE Department</div>
               </div>
             </div>
-            <div className="w-10 h-0.5 rounded-full" style={{ background: '#ffe8d1' }} />
+            <div className="w-full h-0.5 rounded-full" style={{ background: '#ffe8d1' }} />
           </div>
 
           <h2 className="text-gray-800 mb-1" style={{ fontWeight: 700 }}>Welcome back</h2>
@@ -271,13 +260,7 @@ export default function LoginPage({ onLogin }) {
                 Sign In <ChevronRight size={16} />
               </button>
 
-              <div className="rounded-xl p-4 text-sm" style={{ background: '#ffe8d1' }}>
-                <div className="font-semibold mb-1.5" style={{ color: '#826251' }}>Demo Access</div>
-                <div className="text-gray-600 text-xs space-y-0.5">
-                  <div>Any PRN or email · Password: <span className="font-mono font-medium">any</span></div>
-                  <div className="text-gray-500 mt-1">You will select your identity on the next screen.</div>
-                </div>
-              </div>
+              
             </form>
           )}
 
@@ -329,11 +312,7 @@ export default function LoginPage({ onLogin }) {
                 Sign In as Coordinator <ChevronRight size={16} />
               </button>
 
-              <div className="rounded-xl p-4 text-sm" style={{ background: '#ffe8d1' }}>
-                <div className="font-semibold mb-1" style={{ color: '#826251' }}>Demo Credentials</div>
-                <div className="text-gray-600">Email: <span className="font-mono font-medium">admin@wce.ac.in</span></div>
-                <div className="text-gray-600">Password: <span className="font-mono font-medium">admin123</span></div>
-              </div>
+              
             </form>
           )}
         </div>
