@@ -14,6 +14,20 @@ const loginValidation = [
     .isLength({ min: 5 }).withMessage('Password must be at least 5 characters.'),
 ];
 
+const studentLoginValidation = [
+  body('prn')
+    .trim()
+    .notEmpty().withMessage('PRN is required.'),
+  body('email')
+    .trim()
+    .notEmpty().withMessage('Email is required.')
+    .isEmail().withMessage('Invalid email format.'),
+  body('password')
+    .trim()
+    .notEmpty().withMessage('Password is required.')
+    .isLength({ min: 5 }).withMessage('Password must be at least 5 characters.'),
+];
+
 const studentLogin = async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -21,25 +35,25 @@ const studentLogin = async (req, res, next) => {
       return sendError(res, 'Validation failed.', 422, errors.array());
     }
 
-    const { email, password } = req.body;
+    const { prn, email, password } = req.body;
 
     const [rows] = await pool.execute(
       `SELECT id, name, first_name, prn, email, cgpa, password_hash, role
        FROM students
-       WHERE email = ? OR prn = ?
+       WHERE email = ? AND prn = ?
        LIMIT 1`,
-      [email.toLowerCase(), email]
+      [email.toLowerCase(), prn]
     );
 
     if (rows.length === 0) {
-      return sendError(res, 'Invalid email/PRN or password.', 401);
+      return sendError(res, 'Invalid PRN, email, or password.', 401);
     }
 
     const student = rows[0];
     const isMatch = await bcrypt.compare(password, student.password_hash);
 
     if (!isMatch) {
-      return sendError(res, 'Invalid email/PRN or password.', 401);
+      return sendError(res, 'Invalid PRN, email, or password.', 401);
     }
 
     const token = generateToken({
@@ -158,4 +172,5 @@ module.exports = {
   coordinatorLogin,
   getMe,
   loginValidation,
+  studentLoginValidation,
 };

@@ -22,9 +22,12 @@ export default function LoginPage({ onLogin }) {
 
   const handleStudentLogin = async (e) => {
     e.preventDefault();
-    const identifier = studentForm.email || studentForm.prn;
-    if (!identifier) {
-      toast.error('Please enter your PRN or email');
+    if (!studentForm.prn) {
+      toast.error('Please enter your PRN');
+      return;
+    }
+    if (!studentForm.email) {
+      toast.error('Please enter your email');
       return;
     }
     if (!studentForm.password) {
@@ -33,7 +36,8 @@ export default function LoginPage({ onLogin }) {
     }
     try {
       const res = await api.post('/auth/student/login', {
-        email: identifier,
+        prn: studentForm.prn,
+        email: studentForm.email,
         password: studentForm.password
       });
       if (res.data.success) {

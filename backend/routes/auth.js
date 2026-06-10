@@ -5,10 +5,11 @@ const {
   coordinatorLogin,
   getMe,
   loginValidation,
+  studentLoginValidation,
 } = require('../controllers/authController');
 const { authenticate } = require('../middleware/auth');
 
-router.post('/student/login', loginValidation, studentLogin);
+router.post('/student/login', studentLoginValidation, studentLogin);
 router.post('/coordinator/login', loginValidation, coordinatorLogin);
 router.get('/me', authenticate, getMe);
 
