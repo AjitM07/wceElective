@@ -1,26 +1,40 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
+
 import Dashboard from "../pages/student/Dashboard";
+
+import AdminDashboard from "../pages/admin/Dashboard";
+
 import ProtectedRoute from "./ProtectedRoute";
 
-const AppRoutes = () => {
+function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
+    <Routes>
+      <Route
+        path="/"
+        element={<Login />}
+      />
 
-        <Route
-          path="/student/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+      <Route
+        path="/student/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/dashboard"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
-};
+}
 
 export default AppRoutes;

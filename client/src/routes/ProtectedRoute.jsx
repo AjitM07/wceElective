@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({
+function ProtectedRoute({
   children,
 }) {
   const token =
@@ -12,3 +12,5 @@ export default function ProtectedRoute({
 
   return children;
 }
+
+export default ProtectedRoute;
