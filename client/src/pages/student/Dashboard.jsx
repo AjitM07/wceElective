@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { User, LogOut, BookOpen, Award, CheckCircle, Clock } from "lucide-react";
+import { User, LogOut, BookOpen, Award, CheckCircle, Clock, ArrowLeft } from "lucide-react";
 import api from "../../api/axios";
 import useAuthStore from "../../store/authStore";
 
@@ -58,21 +58,33 @@ export default function StudentDashboard() {
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-100 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold" style={{ background: "linear-gradient(135deg, #1e3d4f, #568ea3)" }}>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm sm:text-base" style={{ background: "linear-gradient(135deg, #1e3d4f, #568ea3)" }}>
               W
             </div>
             <div>
-              <h1 className="font-bold text-gray-800 leading-tight">WCE Elective Allocation</h1>
-              <p className="text-xs text-gray-400">Student Portal</p>
+              <h1 className="font-bold text-gray-800 text-sm sm:text-base leading-tight">WCE Elective Allocation</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 hidden md:block">Student Portal</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
-          >
-            <LogOut size={16} /> Sign Out
-          </button>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => navigate("/select-program")}
+              className="flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
+              title="Select Program"
+            >
+              <ArrowLeft size={16} />
+              <span className="hidden sm:inline">Select Program</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
+              title="Sign Out"
+            >
+              <LogOut size={16} />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
+          </div>
         </div>
       </header>
 

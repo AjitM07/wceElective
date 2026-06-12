@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { LogOut, Users, CheckCircle, AlertCircle, BookOpen, Search, Filter } from "lucide-react";
+import { LogOut, Users, CheckCircle, AlertCircle, BookOpen, Search, Filter, ArrowLeft } from "lucide-react";
 import api from "../../api/axios";
 import useAuthStore from "../../store/authStore";
 
@@ -15,12 +15,15 @@ export default function CoordinatorDashboard() {
   const [statusFilter, setStatusFilter] = useState("all"); // 'all', 'allocated', 'pending'
   const [electiveFilter, setElectiveFilter] = useState("all"); // 'all', 'IoT', 'Advanced Machine Learning', 'Remote Sensing and GIS'
   const [submittingId, setSubmittingId] = useState(null);
+  const [portalSettings, setPortalSettings] = useState([]);
+  const [settingsUpdating, setSettingsUpdating] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
-      const [statsRes, studentsRes] = await Promise.all([
+      const [statsRes, studentsRes, settingsRes] = await Promise.all([
         api.get("/coordinator/dashboard"),
-        api.get("/students")
+        api.get("/students"),
+        api.get("/portal-settings")
       ]);
 
       if (statsRes.data.success) {
@@ -28,6 +31,9 @@ export default function CoordinatorDashboard() {
       }
       if (studentsRes.data.success) {
         setStudents(studentsRes.data.data.students);
+      }
+      if (settingsRes.data.success) {
+        setPortalSettings(settingsRes.data.data);
       }
     } catch (err) {
       console.error(err);
@@ -40,6 +46,31 @@ export default function CoordinatorDashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  const handleTogglePortal = async (name, currentStatus) => {
+    setSettingsUpdating(true);
+    try {
+      const res = await api.post("/portal-settings", {
+        name,
+        is_accessible: !currentStatus
+      });
+      if (res.data.success) {
+        toast.success(`Portal '${name}' is now ${!currentStatus ? 'accessible' : 'inaccessible'} for students.`);
+        // Refresh portal settings
+        const settingsRes = await api.get("/portal-settings");
+        if (settingsRes.data.success) {
+          setPortalSettings(settingsRes.data.data);
+        }
+      } else {
+        toast.error(res.data.message || "Failed to update portal status.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to toggle portal status.");
+    } finally {
+      setSettingsUpdating(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -111,21 +142,33 @@ export default function CoordinatorDashboard() {
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-100 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold" style={{ background: "linear-gradient(135deg, #1e3d4f, #568ea3)" }}>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm sm:text-base" style={{ background: "linear-gradient(135deg, #1e3d4f, #568ea3)" }}>
               W
             </div>
             <div>
-              <h1 className="font-bold text-gray-800 leading-tight">WCE Elective Allocation</h1>
-              <p className="text-xs text-gray-400">Coordinator Dashboard</p>
+              <h1 className="font-bold text-gray-800 text-sm sm:text-base leading-tight">WCE Elective Allocation</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400 hidden md:block">Coordinator Dashboard</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
-          >
-            <LogOut size={16} /> Sign Out
-          </button>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => navigate("/select-program")}
+              className="flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
+              title="Select Program"
+            >
+              <ArrowLeft size={16} />
+              <span className="hidden sm:inline">Select Program</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
+              title="Sign Out"
+            >
+              <LogOut size={16} />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -162,6 +205,39 @@ export default function CoordinatorDashboard() {
               <span className="text-gray-400 text-xs font-semibold uppercase">Pending Allocation</span>
               <h3 className="text-2xl font-black text-gray-800">{stats?.pendingAllocation}</h3>
             </div>
+          </div>
+        </div>
+
+        {/* Portal Status Controls */}
+        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-xs">
+          <h3 className="font-bold text-gray-800 text-lg mb-6 flex items-center gap-2">
+            <BookOpen size={20} style={{ color: "#568ea3" }} />
+            Student Portal Access Controls
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {portalSettings.map((portal) => (
+              <div key={portal.name} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                <div>
+                  <h4 className="font-bold text-gray-800 text-sm">{portal.name}</h4>
+                  <p className="text-xs text-gray-400">
+                    {portal.is_accessible ? "Accessible to students" : "Closed / Inaccessible"}
+                  </p>
+                </div>
+                <button
+                  disabled={settingsUpdating}
+                  onClick={() => handleTogglePortal(portal.name, portal.is_accessible)}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#568ea3] focus:ring-offset-2 ${
+                    portal.is_accessible ? 'bg-[#568ea3]' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                      portal.is_accessible ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 

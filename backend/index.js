@@ -9,6 +9,7 @@ const errorHandler = require('./middleware/errorHandler');
 const authRoutes        = require('./routes/auth');
 const studentRoutes     = require('./routes/students');
 const coordinatorRoutes = require('./routes/coordinator');
+const portalSettingsRoutes = require('./routes/portalSettings');
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -60,6 +61,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth',        loginLimiter, authRoutes);
 app.use('/api/students',    studentRoutes);
 app.use('/api/coordinator', coordinatorRoutes);
+app.use('/api/portal-settings', portalSettingsRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found.` });
