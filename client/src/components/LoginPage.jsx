@@ -126,7 +126,7 @@ export default function LoginPage({ onLogin }) {
               <div className="text-white font-bold text-3xl leading-tight">Walchand College of Engineering, Sangli</div>
               <div className="text-white/80 text-md">Department of Computer Science and Engineering</div>
             </div>
-            
+
           </div>
           <div className="w-full h-0.5 rounded-full" style={{ background: '#ffe8d1' }} />
         </div>
@@ -140,12 +140,12 @@ export default function LoginPage({ onLogin }) {
             A smart, automated platform for managing elective subject preferences and fair allocation for CSE undergraduate students.
           </p>
 
-          
+
         </div>
 
         {/* Footer */}
         <div className="relative z-10 text-white/100 text-md">
-             · Academic Year 2026 – 27 ·
+          · Academic Year 2026 – 27 ·
         </div>
       </div>
 
@@ -257,10 +257,10 @@ export default function LoginPage({ onLogin }) {
                 className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-95"
                 style={{ background: 'linear-gradient(135deg, #568ea3, #68c3d4)', boxShadow: '0 4px 15px rgba(86,142,163,0.35)' }}
               >
-                Sign In <ChevronRight size={16} />
+                Login <ChevronRight size={16} />
               </button>
 
-              
+
             </form>
           )}
 
@@ -309,10 +309,10 @@ export default function LoginPage({ onLogin }) {
                 className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-95"
                 style={{ background: 'linear-gradient(135deg, #568ea3, #68c3d4)', boxShadow: '0 4px 15px rgba(86,142,163,0.35)' }}
               >
-                Sign In as Coordinator <ChevronRight size={16} />
+                Login as Coordinator <ChevronRight size={16} />
               </button>
 
-              
+
             </form>
           )}
         </div>
