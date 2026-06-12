@@ -46,7 +46,7 @@ export default function LoginPage({ onLogin }) {
         toast.success('Login successful!');
         login(res.data.data.user, res.data.data.token);
         if (onLogin) onLogin('student');
-        navigate('/student/dashboard');
+        navigate('/select-program');
       } else {
         toast.error(res.data.message || 'Login failed');
       }
@@ -75,7 +75,7 @@ export default function LoginPage({ onLogin }) {
         toast.success('Welcome, Coordinator!');
         login(res.data.data.user, res.data.data.token);
         if (onLogin) onLogin('admin');
-        navigate('/admin/dashboard');
+        navigate('/select-program');
       } else {
         toast.error(res.data.message || 'Login failed');
       }

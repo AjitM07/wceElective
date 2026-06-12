@@ -1,11 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 
 import Login from "../components/LoginPage";
-
+import SelectProgram from "../pages/SelectProgram";
 import Dashboard from "../pages/student/Dashboard";
-
 import AdminDashboard from "../pages/admin/Dashboard";
-
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
@@ -14,6 +12,15 @@ function AppRoutes() {
       <Route
         path="/"
         element={<Login />}
+      />
+
+      <Route
+        path="/select-program"
+        element={
+          <ProtectedRoute>
+            <SelectProgram />
+          </ProtectedRoute>
+        }
       />
 
       <Route
