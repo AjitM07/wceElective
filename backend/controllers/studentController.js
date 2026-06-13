@@ -6,7 +6,7 @@ const getProfile = async (req, res, next) => {
     const { id } = req.user;
 
     const [students] = await pool.execute(
-      `SELECT s.id, s.name, s.first_name, s.prn, s.email, s.phone, s.cgpa
+      `SELECT s.id, s.name, s.first_name, s.prn, s.division, s.details_verified, s.email, s.phone, s.cgpa
        FROM students s WHERE s.id = ? LIMIT 1`,
       [id]
     );
@@ -42,10 +42,37 @@ const getProfile = async (req, res, next) => {
   }
 };
 
+const verifyProfile = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { phone } = req.body;
+
+    if (!phone) {
+      return sendError(res, 'Contact number is required.', 400);
+    }
+
+    const cleanedPhone = String(phone).trim().replace(/[^0-9]/g, '').slice(-10);
+    if (cleanedPhone.length !== 10) {
+      return sendError(res, 'Please provide a valid 10-digit contact number.', 400);
+    }
+
+    await pool.execute(
+      `UPDATE students
+       SET phone = ?, details_verified = TRUE
+       WHERE id = ?`,
+      [cleanedPhone, id]
+    );
+
+    return sendSuccess(res, {}, 'Profile verified successfully.');
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getAllStudents = async (req, res, next) => {
   try {
     const [students] = await pool.execute(
-      `SELECT s.id, s.name, s.prn, s.email, s.cgpa,
+      `SELECT s.id, s.name, s.prn, s.division, s.details_verified, s.email, s.cgpa,
               e1.name  AS pref1,
               e2.name  AS pref2,
               e3.name  AS pref3,
@@ -68,4 +95,4 @@ const getAllStudents = async (req, res, next) => {
   }
 };
 
-module.exports = { getProfile, getAllStudents };
+module.exports = { getProfile, getAllStudents, verifyProfile };

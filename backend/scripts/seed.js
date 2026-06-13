@@ -88,6 +88,7 @@ async function seedStudents(conn, rows) {
   for (const row of rows) {
     const name      = String(row['Name'] || '').trim();
     const prn       = cleanPRN(row['PRN No']);
+    const division  = String(row['Division'] || 'A').trim();
     const email     = String(row['Email Address'] || '').trim().toLowerCase();
     const phone     = cleanPhone(row['Contact Number']);
     const cgpa      = parseFloat(row['CGPA']) || null;
@@ -109,12 +110,13 @@ async function seedStudents(conn, rows) {
 
     try {
       const [result] = await conn.execute(
-        `INSERT INTO students (name, first_name, prn, email, phone, cgpa, password_hash)
-         VALUES (?, ?, ?, ?, ?, ?, ?)
+        `INSERT INTO students (name, first_name, prn, division, email, phone, cgpa, password_hash)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE
            name=VALUES(name), first_name=VALUES(first_name),
+           division=VALUES(division),
            phone=VALUES(phone), cgpa=VALUES(cgpa)`,
-        [name, firstName, prn, email, phone, cgpa, hash]
+        [name, firstName, prn, division, email, phone, cgpa, hash]
       );
 
       let studentId;
@@ -156,6 +158,24 @@ async function seedStudents(conn, rows) {
   console.log(`   ✅ Inserted/updated: ${inserted} | Skipped: ${skipped} | Errors: ${errors}`);
 }
 
+async function seedPortalSettings(conn) {
+  console.log('\n⚙ Seeding portal settings…');
+  const settings = [
+    { name: 'Open Elective I', is_accessible: 1 },
+    { name: 'Open Elective II', is_accessible: 0 },
+    { name: 'Mini-Project', is_accessible: 0 },
+  ];
+  for (const s of settings) {
+    await conn.execute(
+      `INSERT INTO portal_settings (name, is_accessible)
+       VALUES (?, ?)
+       ON DUPLICATE KEY UPDATE is_accessible=VALUES(is_accessible)`,
+      [s.name, s.is_accessible]
+    );
+    console.log(`   ✔ ${s.name} : ${s.is_accessible ? 'Open' : 'Closed'}`);
+  }
+}
+
 async function main() {
   await testConnection();
   const conn = await pool.getConnection();
@@ -169,6 +189,7 @@ async function main() {
     await seedElectives(conn);
     await seedCoordinators(conn);
     await seedStudents(conn, rows);
+    await seedPortalSettings(conn);
 
     await conn.commit();
     console.log('\nSeeding complete!\n');

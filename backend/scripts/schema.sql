@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS students (
   name          VARCHAR(100) NOT NULL,
   first_name    VARCHAR(50)  NOT NULL,
   prn           VARCHAR(20)  NOT NULL UNIQUE,
+  division      VARCHAR(10)  NOT NULL DEFAULT 'A',
+  details_verified BOOLEAN   DEFAULT FALSE,
   email         VARCHAR(120) NOT NULL UNIQUE,
   phone         VARCHAR(15),
   cgpa          DECIMAL(4,2),
@@ -71,3 +73,10 @@ CREATE INDEX idx_students_prn    ON students(prn);
 CREATE INDEX idx_coord_email     ON coordinators(email);
 CREATE INDEX idx_pref_student    ON elective_preferences(student_id);
 CREATE INDEX idx_alloc_elective  ON elective_allocations(elective_id);
+
+CREATE TABLE IF NOT EXISTS portal_settings (
+  name          VARCHAR(50) PRIMARY KEY,
+  is_accessible BOOLEAN DEFAULT FALSE,
+  created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

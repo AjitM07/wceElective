@@ -38,7 +38,7 @@ const studentLogin = async (req, res, next) => {
     const { prn, email, password } = req.body;
 
     const [rows] = await pool.execute(
-      `SELECT id, name, first_name, prn, email, cgpa, password_hash, role
+      `SELECT id, name, first_name, prn, division, details_verified, email, cgpa, password_hash, role
        FROM students
        WHERE email = ? AND prn = ?
        LIMIT 1`,
@@ -70,6 +70,8 @@ const studentLogin = async (req, res, next) => {
         name:       student.name,
         first_name: student.first_name,
         prn:        student.prn,
+        division:   student.division,
+        details_verified: student.details_verified,
         email:      student.email,
         cgpa:       student.cgpa,
         role:       'student',
@@ -142,7 +144,7 @@ const getMe = async (req, res, next) => {
 
     if (role === 'student') {
       const [rows] = await pool.execute(
-        `SELECT id, name, first_name, prn, email, phone, cgpa, role
+        `SELECT id, name, first_name, prn, division, details_verified, email, phone, cgpa, role
          FROM students WHERE id = ? LIMIT 1`,
         [id]
       );

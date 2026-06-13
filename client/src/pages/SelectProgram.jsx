@@ -117,7 +117,11 @@ export default function SelectProgram() {
     if (user?.role === "coordinator") {
       navigate("/admin/dashboard");
     } else {
-      navigate("/student/dashboard");
+      if (user?.details_verified) {
+        navigate("/student/dashboard");
+      } else {
+        navigate("/student/confirm-details");
+      }
     }
   };
 
@@ -214,9 +218,33 @@ export default function SelectProgram() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center max-w-xl mb-10">
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-2">
+          <h2 className="text-3xl font-bold text-slate-800 tracking-tight mb-2">
             Select a Program
           </h2>
+          {user?.role === "student" && (
+            <div className="flex items-center justify-center gap-4 sm:gap-8 max-w-md mx-auto pb-4 mt-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-[#568ea3] text-white flex items-center justify-center text-xs font-bold shadow-md shadow-[#568ea3]/20">
+                  1
+                </div>
+                <span className="text-xs font-bold text-slate-800">Program</span>
+              </div>
+              <div className="h-0.5 w-12 bg-slate-200 rounded"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs font-bold">
+                  2
+                </div>
+                <span className="text-xs font-semibold text-slate-400">Profile</span>
+              </div>
+              <div className="h-0.5 w-12 bg-slate-200 rounded"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center text-xs font-bold">
+                  3
+                </div>
+                <span className="text-xs font-semibold text-slate-400">Preferences</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Academic Year Dropdown Selector */}

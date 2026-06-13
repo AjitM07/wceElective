@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { User, LogOut, BookOpen, Award, CheckCircle, Clock, ArrowLeft } from "lucide-react";
 import api from "../../api/axios";
 import useAuthStore from "../../store/authStore";
+import wceLogo from "../../assets/WCElogo.png";
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
@@ -16,6 +17,11 @@ export default function StudentDashboard() {
       try {
         const res = await api.get("/students/profile");
         if (res.data.success) {
+          const profile = res.data.data.student;
+          if (!profile.details_verified) {
+            navigate("/student/confirm-details");
+            return;
+          }
           setProfileData(res.data.data);
         } else {
           toast.error(res.data.message || "Failed to load profile.");
@@ -57,28 +63,35 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-100 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm sm:text-base" style={{ background: "linear-gradient(135deg, #1e3d4f, #568ea3)" }}>
-              W
-            </div>
-            <div>
-              <h1 className="font-bold text-gray-800 text-sm sm:text-base leading-tight">WCE Elective Allocation</h1>
-              <p className="text-[10px] sm:text-xs text-gray-400 hidden md:block">Student Portal</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 grid grid-cols-3 items-center">
+          {/* Left: Back Button */}
+          <div className="flex justify-start">
             <button
               onClick={() => navigate("/select-program")}
-              className="flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
+              className="flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 cursor-pointer"
               title="Select Program"
             >
               <ArrowLeft size={16} />
               <span className="hidden sm:inline">Select Program</span>
             </button>
+          </div>
+
+          {/* Center: WCE Logo and Title */}
+          <div className="flex items-center justify-center gap-2 sm:gap-3 text-center">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center flex-shrink-0">
+              <img src={wceLogo} alt="WCE Logo" className="w-full h-full object-contain" />
+            </div>
+            <div className="text-left">
+              <h1 className="font-bold text-gray-800 text-sm sm:text-base leading-tight">WCE Elective Allocation</h1>
+              <p className="text-[10px] sm:text-xs text-gray-400">Student Portal</p>
+            </div>
+          </div>
+
+          {/* Right: Sign Out Button */}
+          <div className="flex justify-end">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200"
+              className="flex items-center gap-2 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 cursor-pointer"
               title="Sign Out"
             >
               <LogOut size={16} />
@@ -113,6 +126,16 @@ export default function StudentDashboard() {
                 <div>
                   <span className="block text-gray-400 text-xs uppercase font-semibold">Contact Number</span>
                   <span className="font-medium text-gray-700">{student.phone || "Not Provided"}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div>
+                    <span className="block text-gray-400 text-xs uppercase font-semibold">Division</span>
+                    <span className="font-semibold text-gray-700">Division {student.division || "N/A"}</span>
+                  </div>
+                  <div>
+                    <span className="block text-gray-400 text-xs uppercase font-semibold">Semester</span>
+                    <span className="font-semibold text-gray-700">Semester 5</span>
+                  </div>
                 </div>
                 <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
                   <div>

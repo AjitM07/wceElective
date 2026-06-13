@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "../components/LoginPage";
 import SelectProgram from "../pages/SelectProgram";
+import ConfirmDetails from "../pages/student/ConfirmDetails";
 import Dashboard from "../pages/student/Dashboard";
 import AdminDashboard from "../pages/admin/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
@@ -19,6 +20,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <SelectProgram />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/student/confirm-details"
+        element={
+          <ProtectedRoute allowedRole="student">
+            <ConfirmDetails />
           </ProtectedRoute>
         }
       />
