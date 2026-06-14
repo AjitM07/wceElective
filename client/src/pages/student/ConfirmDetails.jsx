@@ -50,11 +50,11 @@ export default function ConfirmDetails() {
           setStudentData(profile);
           setContactNo(profile.phone || "");
         } else {
-          toast.error("Failed to load profile details.");
+          toast.error("Failed to load student details.");
         }
       } catch (err) {
         console.error(err);
-        toast.error("Error fetching profile from database.");
+        toast.error("Error fetching details from database.");
         logout();
         navigate("/");
       } finally {
@@ -96,14 +96,14 @@ export default function ConfirmDetails() {
           phone: cleanedPhone,
           details_verified: true
         });
-        toast.success("Profile verified successfully!");
+        toast.success("Details verified successfully!");
         navigate("/student/dashboard");
       } else {
-        toast.error(res.data.message || "Failed to verify details.");
+        toast.error(res.data.message || "Failed to verify details. Please try again later.");
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Failed to update profile.");
+      toast.error(err.response?.data?.message || "Failed to verify details. Please try again later.");
     } finally {
       setSubmitting(false);
     }
@@ -114,7 +114,7 @@ export default function ConfirmDetails() {
       <div className="min-h-screen flex items-center justify-center bg-[#f4f9fc]">
         <div className="flex flex-col items-center gap-3">
           <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#568ea3", borderTopColor: "transparent" }}></div>
-          <p className="text-slate-500 font-medium animate-pulse">Loading profile records...</p>
+          <p className="text-slate-500 font-medium animate-pulse">Loading student records...</p>
         </div>
       </div>
     );
@@ -326,7 +326,7 @@ export default function ConfirmDetails() {
                   : "bg-slate-300 shadow-none cursor-not-allowed"
                   }`}
               >
-                {submitting ? "Updating Profile..." : "Save Details & Proceed to Preferences"}
+                {submitting ? "Verifying Student Details..." : "Save Details & Proceed to Preferences"}
               </button>
             </form>
           </div>

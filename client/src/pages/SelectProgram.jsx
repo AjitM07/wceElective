@@ -72,6 +72,12 @@ export default function SelectProgram() {
     fetchPortalSettings();
   }, []);
 
+  useEffect(() => {
+    if (user && user.role !== "coordinator") {
+      setAcademicYear("AY 2026-27");
+    }
+  }, [user]);
+
   const handleTogglePortal = async (name, currentStatus) => {
     try {
       const res = await api.post("/portal-settings", {
@@ -100,14 +106,16 @@ export default function SelectProgram() {
   };
 
   const handleEnterPortal = (programName) => {
-    if (academicYear !== "AY 2026-27") {
-      toast.error(`Portal is not active for ${academicYear}.`);
-      return;
-    }
+    if (user?.role !== "coordinator") {
+      if (academicYear !== "AY 2026-27") {
+        toast.error(`Portal is not active for ${academicYear}.`);
+        return;
+      }
 
-    if (!portalSettings[programName]) {
-      toast.error("This portal is not active yet.");
-      return;
+      if (!portalSettings[programName]) {
+        toast.error("This portal is not active yet.");
+        return;
+      }
     }
 
     // Save selection in the Zustand state & localStorage
@@ -247,46 +255,58 @@ export default function SelectProgram() {
           )}
         </div>
 
-        {/* Academic Year Dropdown Selector */}
+        {/* Academic Year Selector */}
         <div className="flex flex-col items-center mb-12 relative" ref={dropdownRef}>
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">
             Academic Year
           </span>
 
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-full border border-slate-200 hover:border-slate-300 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#568ea3]/20"
-          >
-            <span className="font-semibold text-slate-700 text-sm">{academicYear}</span>
-            {academicYear === "AY 2026-27" && (
+          {user?.role === "coordinator" ? (
+            <>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-full border border-slate-200 hover:border-slate-300 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#568ea3]/20 cursor-pointer"
+              >
+                <span className="font-semibold text-slate-700 text-sm">{academicYear}</span>
+                {academicYear === "AY 2026-27" && (
+                  <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ml-1">
+                    Current
+                  </span>
+                )}
+                <ChevronDown size={16} className="text-slate-400" />
+              </button>
+
+              {/* Dropdown Options */}
+              {dropdownOpen && (
+                <div className="absolute top-20 z-50 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {years.map((year) => (
+                    <button
+                      key={year}
+                      onClick={() => {
+                        setAcademicYear(year);
+                        setDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors hover:bg-slate-50 flex items-center justify-between cursor-pointer ${
+                        academicYear === year ? "text-[#568ea3] bg-[#568ea3]/5" : "text-slate-700"
+                      }`}
+                    >
+                      <span>{year}</span>
+                      {year === "AY 2026-27" && (
+                        <span className="bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase px-1 py-0.5 rounded">
+                          Current
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex items-center gap-2 bg-slate-50 px-5 py-2.5 rounded-full border border-slate-200/60 shadow-sm">
+              <span className="font-semibold text-slate-600 text-sm">AY 2026-27</span>
               <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ml-1">
                 Current
               </span>
-            )}
-            <ChevronDown size={16} className="text-slate-400" />
-          </button>
-
-          {/* Dropdown Options */}
-          {dropdownOpen && (
-            <div className="absolute top-20 z-50 w-52 bg-white rounded-2xl shadow-xl border border-slate-100 py-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
-              {years.map((year) => (
-                <button
-                  key={year}
-                  onClick={() => {
-                    setAcademicYear(year);
-                    setDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors hover:bg-slate-50 flex items-center justify-between ${academicYear === year ? "text-[#568ea3] bg-[#568ea3]/5" : "text-slate-700"
-                    }`}
-                >
-                  <span>{year}</span>
-                  {year === "AY 2026-27" && (
-                    <span className="bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase px-1 py-0.5 rounded">
-                      Current
-                    </span>
-                  )}
-                </button>
-              ))}
             </div>
           )}
         </div>
