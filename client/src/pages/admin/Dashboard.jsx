@@ -132,11 +132,7 @@ export default function CoordinatorDashboard() {
     return matchesSearch && matchesStatus && matchesElective;
   });
 
-  const electivesList = [
-    { id: 1, name: "IoT" },
-    { id: 2, name: "Advanced Machine Learning" },
-    { id: 3, name: "Remote Sensing and GIS" }
-  ];
+  const electivesList = stats?.electives || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -330,9 +326,11 @@ export default function CoordinatorDashboard() {
                   className="px-3 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 bg-white outline-none focus:border-[#568ea3]"
                 >
                   <option value="all">All Electives / Preferences</option>
-                  <option value="IoT">IoT</option>
-                  <option value="Advanced Machine Learning">Advanced Machine Learning</option>
-                  <option value="Remote Sensing and GIS">Remote Sensing and GIS</option>
+                  {electivesList.map((e) => (
+                    <option key={e.id} value={e.name}>
+                      {e.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -380,15 +378,7 @@ export default function CoordinatorDashboard() {
                       <td className="px-6 py-4">
                         <select
                           disabled={submittingId === s.id}
-                          value={
-                            s.allocated_elective === "IoT"
-                              ? 1
-                              : s.allocated_elective === "Advanced Machine Learning"
-                              ? 2
-                              : s.allocated_elective === "Remote Sensing and GIS"
-                              ? 3
-                              : ""
-                          }
+                          value={s.allocated_elective_id || ""}
                           onChange={(e) => handleAllocate(s.id, e.target.value)}
                           className="px-2 py-1.5 rounded-lg border border-gray-200 text-xs bg-white outline-none focus:border-[#568ea3]"
                           style={{

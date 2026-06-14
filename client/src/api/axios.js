@@ -8,12 +8,21 @@ const api = axios.create({
   }
 });
 
-// Request interceptor to add authorization token
+// Request interceptor to add authorization token and selected program header
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    const savedProgram = localStorage.getItem("selectedProgram");
+    if (savedProgram) {
+      try {
+        const program = JSON.parse(savedProgram);
+        config.headers["X-Selected-Program"] = program;
+      } catch (e) {
+        config.headers["X-Selected-Program"] = savedProgram;
+      }
     }
     return config;
   },

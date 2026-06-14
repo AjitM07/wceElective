@@ -20,9 +20,12 @@ const COORDINATORS = [
 ];
 
 const ELECTIVES = [
-  { name: 'IoT',                       code: 'CSE-E1-01', capacity: 60 },
-  { name: 'Advanced Machine Learning', code: 'CSE-E1-02', capacity: 40 },
-  { name: 'Remote Sensing and GIS',    code: 'CSE-E1-03', capacity: 40 },
+  { name: 'Deep Learning', code: 'CS402', capacity: 60, lecturer: 'Dr. Priya Sharma', description: 'Advanced neural architectures including CNNs, RNNs, Transformers and their applications in computer vision and NLP.' },
+  { name: 'Machine Learning', code: 'CS401', capacity: 60, lecturer: 'Dr. Anil Patil', description: 'Covers supervised & unsupervised learning, neural networks, and real-world ML application pipelines.' },
+  { name: 'Cyber Security', code: 'CS404', capacity: 60, lecturer: 'Dr. Meera Joshi', description: 'Network security, cryptography fundamentals, ethical hacking, secure coding practices, and risk assessment.' },
+  { name: 'Cloud Computing', code: 'CS403', capacity: 60, lecturer: 'Dr. Rajesh Kumar', description: 'Cloud service models (IaaS/PaaS/SaaS), deployment on AWS/Azure/GCP, microservices, containerization with Docker/Kubernetes.' },
+  { name: 'Natural Language Processing', code: 'CS406', capacity: 60, lecturer: 'Dr. Kavita Nair', description: 'Text processing, sentiment analysis, language models, chatbot development, and modern NLP algorithms.' },
+  { name: 'IoT & Embedded Systems', code: 'CS405', capacity: 60, lecturer: 'Dr. Sanjay Desai', description: 'Embedded programming, sensor integration, MQTT protocol, edge computing, and real-time operating systems.' },
 ];
 
 function extractFirstName(fullName) {
@@ -52,10 +55,10 @@ async function seedElectives(conn) {
   console.log('\n📚 Seeding electives…');
   for (const e of ELECTIVES) {
     await conn.execute(
-      `INSERT INTO electives (name, code, capacity, academic_year, semester)
-       VALUES (?, ?, ?, '2025-26', 'SEM-VI')
-       ON DUPLICATE KEY UPDATE code=VALUES(code), capacity=VALUES(capacity)`,
-      [e.name, e.code, e.capacity]
+      `INSERT INTO electives (name, code, description, capacity, lecturer, academic_year, semester)
+       VALUES (?, ?, ?, ?, ?, '2026-27', 'SEM-VII')
+       ON DUPLICATE KEY UPDATE code=VALUES(code), capacity=VALUES(capacity), description=VALUES(description), lecturer=VALUES(lecturer)`,
+      [e.name, e.code, e.description, e.capacity, e.lecturer]
     );
     console.log(`   ✔ ${e.name}`);
   }
@@ -92,9 +95,16 @@ async function seedStudents(conn, rows) {
     const email     = String(row['Email Address'] || '').trim().toLowerCase();
     const phone     = cleanPhone(row['Contact Number']);
     const cgpa      = parseFloat(row['CGPA']) || null;
-    const pref1     = String(row['Elective-I Preference 1'] || '').trim();
-    const pref2     = String(row['Elective-I Preference 2'] || '').trim();
-    const pref3     = String(row['Elective-I Preference 3'] || '').trim();
+    const mapPrefName = (name) => {
+      const n = String(name || '').trim();
+      if (n === 'Advanced Machine Learning') return 'Machine Learning';
+      if (n === 'IoT') return 'IoT & Embedded Systems';
+      if (n === 'Remote Sensing and GIS') return 'Cloud Computing';
+      return n;
+    };
+    const pref1     = mapPrefName(row['Elective-I Preference 1']);
+    const pref2     = mapPrefName(row['Elective-I Preference 2']);
+    const pref3     = mapPrefName(row['Elective-I Preference 3']);
     const reason    = String(row['Reason for selecting (Elective-I) subject '] || '').trim() || null;
     const submittedAt = row['Timestamp'] ? new Date(row['Timestamp']) : null;
 
@@ -110,41 +120,17 @@ async function seedStudents(conn, rows) {
 
     try {
       const [result] = await conn.execute(
-        `INSERT INTO students (name, first_name, prn, division, email, phone, cgpa, password_hash)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `INSERT INTO students (name, first_name, prn, division, email, phone, cgpa, password_hash, details_verified, preferences_submitted, preferences_submitted_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, FALSE, FALSE, NULL)
          ON DUPLICATE KEY UPDATE
            name=VALUES(name), first_name=VALUES(first_name),
            division=VALUES(division),
-           phone=VALUES(phone), cgpa=VALUES(cgpa)`,
+           phone=VALUES(phone), cgpa=VALUES(cgpa),
+           details_verified=FALSE,
+           preferences_submitted=FALSE,
+           preferences_submitted_at=NULL`,
         [name, firstName, prn, division, email, phone, cgpa, hash]
       );
-
-      let studentId;
-      if (result.insertId) {
-        studentId = result.insertId;
-      } else {
-        const [existing] = await conn.execute(
-          'SELECT id FROM students WHERE email = ?', [email]
-        );
-        studentId = existing[0].id;
-      }
-
-      const prefs = [pref1, pref2, pref3];
-      for (let rank = 1; rank <= 3; rank++) {
-        const prefName   = prefs[rank - 1];
-        const electiveId = electiveMap[prefName];
-        if (!electiveId) continue;
-
-        await conn.execute(
-          `INSERT INTO elective_preferences
-             (student_id, elective_id, preference_rank, reason, submitted_at)
-           VALUES (?, ?, ?, ?, ?)
-           ON DUPLICATE KEY UPDATE
-             elective_id=VALUES(elective_id),
-             reason=VALUES(reason)`,
-          [studentId, electiveId, rank, rank === 1 ? reason : null, submittedAt]
-        );
-      }
 
       inserted++;
       if (inserted % 20 === 0) console.log(`   …${inserted} students done`);
@@ -161,16 +147,17 @@ async function seedStudents(conn, rows) {
 async function seedPortalSettings(conn) {
   console.log('\n⚙ Seeding portal settings…');
   const settings = [
-    { name: 'Open Elective I', is_accessible: 1 },
-    { name: 'Open Elective II', is_accessible: 0 },
-    { name: 'Mini-Project', is_accessible: 0 },
+    { name: 'Open Elective I', is_accessible: 1, deadline: new Date("2026-08-30T23:58:00") },
+    { name: 'Open Elective II', is_accessible: 0, deadline: new Date("2026-08-30T23:58:00") },
+    { name: 'Mini-Project', is_accessible: 0, deadline: new Date("2026-08-30T23:58:00") },
+    { name: 'Allotment Results', is_accessible: 0, deadline: null },
   ];
   for (const s of settings) {
     await conn.execute(
-      `INSERT INTO portal_settings (name, is_accessible)
-       VALUES (?, ?)
-       ON DUPLICATE KEY UPDATE is_accessible=VALUES(is_accessible)`,
-      [s.name, s.is_accessible]
+      `INSERT INTO portal_settings (name, is_accessible, deadline)
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE is_accessible=VALUES(is_accessible), deadline=VALUES(deadline)`,
+      [s.name, s.is_accessible, s.deadline]
     );
     console.log(`   ✔ ${s.name} : ${s.is_accessible ? 'Open' : 'Closed'}`);
   }

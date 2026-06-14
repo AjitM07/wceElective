@@ -198,7 +198,7 @@ export default function ConfirmDetails() {
           </div>
 
           {/* Details Form Card */}
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-xl p-6 sm:p-10 space-y-8">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-xl p-4 sm:p-10 space-y-8">
             <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
               <div className="w-10 h-10 rounded-xl bg-[#568ea3]/10 text-[#568ea3] flex items-center justify-center">
                 <BadgeCheck size={20} />

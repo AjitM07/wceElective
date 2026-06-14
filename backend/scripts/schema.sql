@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS students (
   prn           VARCHAR(20)  NOT NULL UNIQUE,
   division      VARCHAR(10)  NOT NULL DEFAULT 'A',
   details_verified BOOLEAN   DEFAULT FALSE,
+  preferences_submitted BOOLEAN DEFAULT FALSE,
+  preferences_submitted_at TIMESTAMP NULL DEFAULT NULL,
   email         VARCHAR(120) NOT NULL UNIQUE,
   phone         VARCHAR(15),
   cgpa          DECIMAL(4,2),
@@ -38,23 +40,35 @@ CREATE TABLE IF NOT EXISTS electives (
   code          VARCHAR(20),
   description   TEXT,
   capacity      INT DEFAULT 40,
-  academic_year VARCHAR(20) DEFAULT '2025-26',
-  semester      VARCHAR(10) DEFAULT 'SEM-VI',
+  lecturer      VARCHAR(100),
+  academic_year VARCHAR(20) DEFAULT '2026-27',
+  semester      VARCHAR(10) DEFAULT 'SEM-VII',
   is_active     BOOLEAN DEFAULT TRUE,
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS elective_preferences (
+CREATE TABLE IF NOT EXISTS draft_preferences (
   id              INT AUTO_INCREMENT PRIMARY KEY,
   student_id      INT NOT NULL,
   elective_id     INT NOT NULL,
-  preference_rank TINYINT NOT NULL CHECK (preference_rank IN (1, 2, 3)),
+  preference_rank TINYINT NOT NULL CHECK (preference_rank >= 1),
   reason          TEXT,
-  submitted_at    TIMESTAMP,
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (student_id)  REFERENCES students(id)  ON DELETE CASCADE,
   FOREIGN KEY (elective_id) REFERENCES electives(id) ON DELETE CASCADE,
-  UNIQUE KEY uq_student_pref (student_id, preference_rank)
+  UNIQUE KEY uq_student_draft (student_id, preference_rank)
+);
+
+CREATE TABLE IF NOT EXISTS submitted_preferences (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  student_id      INT NOT NULL,
+  elective_id     INT NOT NULL,
+  preference_rank TINYINT NOT NULL CHECK (preference_rank >= 1),
+  reason          TEXT,
+  submitted_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id)  REFERENCES students(id)  ON DELETE CASCADE,
+  FOREIGN KEY (elective_id) REFERENCES electives(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_student_submitted (student_id, preference_rank)
 );
 
 CREATE TABLE IF NOT EXISTS elective_allocations (
@@ -71,12 +85,14 @@ CREATE TABLE IF NOT EXISTS elective_allocations (
 CREATE INDEX idx_students_email  ON students(email);
 CREATE INDEX idx_students_prn    ON students(prn);
 CREATE INDEX idx_coord_email     ON coordinators(email);
-CREATE INDEX idx_pref_student    ON elective_preferences(student_id);
+CREATE INDEX idx_draft_student    ON draft_preferences(student_id);
+CREATE INDEX idx_submitted_student ON submitted_preferences(student_id);
 CREATE INDEX idx_alloc_elective  ON elective_allocations(elective_id);
 
 CREATE TABLE IF NOT EXISTS portal_settings (
   name          VARCHAR(50) PRIMARY KEY,
   is_accessible BOOLEAN DEFAULT FALSE,
+  deadline      TIMESTAMP NULL DEFAULT NULL,
   created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

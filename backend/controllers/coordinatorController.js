@@ -10,14 +10,13 @@ const getDashboard = async (req, res, next) => {
       'SELECT COUNT(*) AS totalAllocated FROM elective_allocations'
     );
     const [electiveCounts] = await pool.execute(
-      `SELECT e.name, e.capacity,
-              COUNT(ep.id) AS preferences_count,
-              COUNT(ea.id) AS allocated_count
+      `SELECT e.id, e.name, e.capacity,
+              (SELECT COUNT(*) FROM submitted_preferences ep 
+               WHERE ep.elective_id = e.id AND ep.preference_rank = 1) AS preferences_count,
+              (SELECT COUNT(*) FROM elective_allocations ea WHERE ea.elective_id = e.id) AS allocated_count
        FROM electives e
-       LEFT JOIN elective_preferences ep ON ep.elective_id = e.id AND ep.preference_rank = 1
-       LEFT JOIN elective_allocations ea ON ea.elective_id = e.id
        WHERE e.is_active = 1
-       GROUP BY e.id, e.name, e.capacity`
+       ORDER BY e.name ASC`
     );
 
     return sendSuccess(res, {
