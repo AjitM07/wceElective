@@ -49,24 +49,24 @@ export default function StudentSidebar({ isOpen, onClose }) {
           ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         {/* Brand Header */}
-        <div className="p-6 border-b border-slate-800/60 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-18 sm:h-18 flex items-center justify-center flex-shrink-0">
+        <div className="relative p-4 sm:p-6 border-b border-slate-800/60 flex items-center">
+          <div className="flex items-center gap-3 pr-6 sm:pr-0 min-w-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center flex-shrink-0">
               <img src={wceLogo} alt="WCE Logo" className="w-full h-full object-contain" />
             </div>
-            <div>
-              <h2 className="font-bold text-white text-xs sm:text-sm md:text-base tracking-wide leading-tight">WCE Open Elective Portal</h2>
-              <p className="text-[10px] sm:text-[12px] text-slate-400 font-medium">Dept. of Computer Science and Engineering</p>
-              <span className="inline-flex mt-1 bg-[#68c3d4]/10 text-[#68c3d4] text-[10px] sm:text-[12px] font-bold uppercase px-1.5 py-0.5 rounded border border-[#68c3d4]/20 tracking-wider">
+            <div className="min-w-0">
+              <h2 className="font-bold text-white text-sm sm:text-base tracking-wide leading-tight">WCE Open Elective Portal</h2>
+              <p className="text-[10px] sm:text-xs text-slate-400 font-medium mt-0.5">Dept. of Computer Science and Engineering</p>
+              <span className="inline-flex mt-1.5 bg-[#68c3d4]/10 text-[#68c3d4] text-[9px] sm:text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border border-[#68c3d4]/20 tracking-wider">
                 {selectedAcademicYear}
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl md:hidden cursor-pointer"
+            className="absolute top-3.5 right-3.5 p-1.5 text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl md:hidden cursor-pointer"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 

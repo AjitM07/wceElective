@@ -268,8 +268,8 @@ export default function ElectivePreferences() {
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className="font-bold text-slate-800 text-xl">Elective Preferences</h1>
-              <p className="text-md text-slate-400 font-semibold">Rank your subject preferences</p>
+              <h1 className="font-bold text-slate-800 text-md">Elective Preferences</h1>
+              <p className="text-sm text-slate-400 font-semibold">Rank your subject preferences</p>
             </div>
           </div>
         </header>
@@ -469,8 +469,8 @@ export default function ElectivePreferences() {
               </div>
 
               {/* Warning label below buttons */}
-              <p className="text-[11px] text-center text-slate-400 font-medium mt-3">
-                * Saving keeps a draft · Submitting is permanent and cannot be modified afterwards
+              <p className="text-[12px] text-center text-rose-400 font-medium mt-3">
+                Saving keeps a draft <br></br> Submitting is permanent and cannot be modified afterwards
               </p>
             </div>
           )}

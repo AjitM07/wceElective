@@ -138,9 +138,9 @@ export default function CoordinatorDashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white border-b border-gray-100 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 grid grid-cols-3 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-16 flex items-center justify-between gap-4">
           {/* Left: Back Button */}
-          <div className="flex justify-start">
+          <div className="flex justify-start flex-shrink-0">
             <button
               onClick={() => navigate("/select-program")}
               className="flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 cursor-pointer"
@@ -152,18 +152,18 @@ export default function CoordinatorDashboard() {
           </div>
 
           {/* Center: WCE Logo and Title */}
-          <div className="flex items-center justify-center gap-2 sm:gap-3 text-center">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 text-center flex-1 min-w-0">
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center flex-shrink-0">
               <img src={wceLogo} alt="WCE Logo" className="w-full h-full object-contain" />
             </div>
             <div className="text-left">
-              <h1 className="font-bold text-gray-800 text-sm sm:text-base leading-tight">WCE Elective Allocation</h1>
+              <h1 className="font-bold text-gray-800 text-xs sm:text-base leading-tight">WCE Elective Allocation</h1>
               <p className="text-[10px] sm:text-xs text-gray-400">Coordinator Dashboard</p>
             </div>
           </div>
 
           {/* Right: Sign Out Button */}
-          <div className="flex justify-end">
+          <div className="flex justify-end flex-shrink-0">
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-2.5 py-2 sm:px-4 sm:py-2 text-sm font-medium text-gray-600 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 cursor-pointer"

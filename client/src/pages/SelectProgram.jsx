@@ -152,13 +152,13 @@ export default function SelectProgram() {
     <div className="min-h-screen bg-[#f4f9fc] flex flex-col font-sans">
       {/* Header */}
       <header className="bg-white border-b border-slate-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center flex-shrink-0">
               <img src={wceLogo} alt="WCE Logo" className="w-full h-full object-contain" />
             </div>
-            <div>
-              <h1 className="font-bold text-slate-800 text-sm sm:text-lg leading-tight">WCE Open Elective Portal</h1>
+            <div className="min-w-0">
+              <h1 className="font-bold text-slate-800 text-xs sm:text-lg leading-tight truncate sm:whitespace-normal">WCE Open Elective Portal</h1>
               <p className="text-[10px] sm:text-xs text-slate-400 hidden md:block">Department of Computer Science and Engineering</p>
             </div>
           </div>

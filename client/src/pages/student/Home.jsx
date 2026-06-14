@@ -137,8 +137,8 @@ export default function StudentHome() {
               <Menu size={20} />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-slate-800 text-lg">Student Dashboard</h1>
-              <p className="text-md text-slate-400 font-semibold">Welcome back, {getFirstName(student?.name)}</p>
+              <h1 className="text-md font-bold text-slate-800 text-lg">Student Dashboard</h1>
+              <p className="text-sm text-slate-400 font-semibold">Welcome back, {getFirstName(student?.name)}</p>
             </div>
           </div>
         </header>
@@ -256,11 +256,10 @@ export default function StudentHome() {
 
             {/* Card 4: Allotment Status */}
             <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[140px]">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
-                allotmentPublished && allocation
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${allotmentPublished && allocation
                   ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                   : "bg-[#1E3E52]/10 text-[#1E3E52] border-[#1E3E52]/15"
-              }`}>
+                }`}>
                 <Award size={18} />
               </div>
               <div className="mt-4">
@@ -268,9 +267,8 @@ export default function StudentHome() {
                 <span className="text-sm font-black text-slate-800 block">
                   {allotmentPublished ? (allocation ? "Allocated" : "Not Allocated") : "Pending"}
                 </span>
-                <span className={`text-[12px] font-bold mt-1.5 block ${
-                  allotmentPublished && allocation ? "text-emerald-600" : "text-[#1E3E52]"
-                }`}>
+                <span className={`text-[12px] font-bold mt-1.5 block ${allotmentPublished && allocation ? "text-emerald-600" : "text-[#1E3E52]"
+                  }`}>
                   {allotmentPublished ? (allocation ? allocation.elective_name : "Awaiting assignment") : "Results pending"}
                 </span>
               </div>
@@ -309,18 +307,16 @@ export default function StudentHome() {
                   setShowAllotmentModal(true);
                 }
               }}
-              className={`w-full border p-5 flex items-center justify-between text-left rounded-xl transition-all duration-200 ${
-                allotmentPublished
+              className={`w-full border p-5 flex items-center justify-between text-left rounded-xl transition-all duration-200 ${allotmentPublished
                   ? "bg-[#568EA3] border-[#406d7d] hover:bg-[#48798e] shadow-sm hover:shadow-md cursor-pointer group text-white"
                   : "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-60"
-              }`}
+                }`}
             >
               <div className="flex items-center gap-4">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${
-                  allotmentPublished
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${allotmentPublished
                     ? "bg-white/15 text-white border-white/20"
                     : "bg-slate-200/50 text-slate-400 border-slate-300/30"
-                }`}>
+                  }`}>
                   <Award size={20} />
                 </div>
                 <div>
@@ -330,11 +326,10 @@ export default function StudentHome() {
                   </p>
                 </div>
               </div>
-              <ArrowRight size={16} className={`transition-all ${
-                allotmentPublished
+              <ArrowRight size={16} className={`transition-all ${allotmentPublished
                   ? "text-white/60 group-hover:text-white group-hover:translate-x-1"
                   : "text-slate-300"
-              }`} />
+                }`} />
             </button>
 
           </div>
@@ -346,7 +341,7 @@ export default function StudentHome() {
       {showAllotmentModal && (
         <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-6 sm:p-8 animate-in zoom-in-95 duration-200 flex flex-col gap-6">
-            
+
             {/* Modal Icon and Title */}
             <div className="text-center space-y-2">
               <div className="w-14 h-14 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200">

@@ -107,8 +107,8 @@ export default function StudentStatus() {
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className="font-bold text-slate-800 text-xl">My Status</h1>
-              <p className="text-md text-slate-400 font-semibold">View your submission and allotment status</p>
+              <h1 className="font-bold text-slate-800 text-ms">My Status</h1>
+              <p className="text-sm text-slate-400 font-semibold">View your status</p>
             </div>
           </div>
         </header>
